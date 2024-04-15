@@ -1,29 +1,33 @@
 import { useState } from 'react'
 
-const Header = props => <h1>{props.name}</h1>
+const Header = (props) => {
+  return <h1>{props.name}</h1>
+}
 
-const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
+const Button = ({ onClick, text }) => {
+  return <button onClick={onClick}>{text}</button>
+}
 
-const Anecdote = ({text, votesCount}) =>
-  <div>
-    <p>{text}</p>
-    <p>has {votesCount} votes</p>
-  </div>
+const Anecdote = ({text, count}) => {
+  return (
+    <div>
+      <p>{text}</p>
+      <p>has {count} votes</p>
+    </div>
+  )
+}
 
-const Winner = ({anecdotes, allVotes}) => {
-  const highestVoteCount = Math.max(...allVotes)
-  const winnerIndex = allVotes.indexOf(highestVoteCount)
-  const winner = anecdotes[winnerIndex]
-  if (highestVoteCount === 0) {
+const MostVotedAnecdote = ({anecdotes, allVotes}) => {
+  const maxVoteIndex = allVotes.indexOf(Math.max(...allVotes))
+  if (Math.max(...allVotes) === 0) {
     return (
       <p>No votes yet</p>
     )
   }
-
   return (
     <div>
-      <p>{winner}</p>
-      <p>has {highestVoteCount} votes</p>
+      <p>{anecdotes[maxVoteIndex]}</p>
+      <p>has {Math.max(...allVotes)} votes</p>
     </div>
   )
 }
@@ -44,8 +48,7 @@ const App = () => {
   const [allVotes, setAllVotes] = useState(Array(anecdotes.length).fill(0))
 
   const handleAnecdoteClick = () => {
-    const arrayIndex = Math.floor(Math.random() * anecdotes.length)
-    setSelected(arrayIndex)
+    setSelected(Math.floor(Math.random() * anecdotes.length))
   }
 
   const handleVoteClick = () => {
@@ -57,12 +60,11 @@ const App = () => {
   return (
     <div>
       <Header name="Anecdote of the day" />
-      <Anecdote text={anecdotes[selected]} votesCount={allVotes[selected]} />
+      <Anecdote text={anecdotes[selected]} count={allVotes[selected]} />
       <Button onClick={handleVoteClick} text="vote"/>
-      <Button onClick={handleAnecdoteClick} text="Next anecdote"/>
-
+      <Button onClick={handleAnecdoteClick} text="next anecdote"/>
       <Header name="Anecdote with most votes" />
-      <Winner anecdotes={anecdotes} allVotes={allVotes} />
+      <MostVotedAnecdote anecdotes={anecdotes} allVotes={allVotes} />
     </div>
   )
 }
