@@ -23,8 +23,8 @@ const StatisticLine = ({text, value}) => {
 
 const Statistics = (clicks) => {
   const total = clicks.good + clicks.neutral + clicks.bad
-  const average = (clicks.good * 1 + clicks.bad * -1) / total
-  const positive = clicks.good * (100/(clicks.good + clicks.neutral + clicks.bad))
+  const average = clicks.good / total
+  const positive = clicks.good * (100/total)
 
   if (total === 0) {
     return (
@@ -67,7 +67,7 @@ const App = () => {
 
   return (
     <div>
-      <Header name="Customer feedback" />
+      <Header name="Give Feedback" />
       <Button onClick={handleGoodClick} text='good' />
       <Button onClick={handleNeutralClick} text='neutral' />
       <Button onClick={handleBadClick} text='bad' />
