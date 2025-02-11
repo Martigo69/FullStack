@@ -1,6 +1,6 @@
 import phoneService from "../services/Phoneservice"
 
-const Persons = ({persons, searchPerson, setPersons}) => {
+const Persons = ({persons, searchPerson, setPersons, setErrorMessage}) => {
     let filteredPersons = []
 
     const deletePersonFromPhonebook = (id,name) => {
@@ -11,7 +11,17 @@ const Persons = ({persons, searchPerson, setPersons}) => {
             .then(returnedDeletedPerson => {
                 persons = persons.filter(person => person.id !== returnedDeletedPerson.id)
                 setPersons(persons)
-            })        
+                setErrorMessage(`${name} is deleted from the Phone book List`)
+                setTimeout(() => {
+                    setErrorMessage(null)
+                  },5000)
+            })
+            .catch(() => {
+                setErrorMessage(`Unable to delete ${name} the Phone book List`)
+                setTimeout(() => {
+                  setErrorMessage(null)
+                },5000)
+            })       
         } 
     }
     if (searchPerson.length !== 0) {

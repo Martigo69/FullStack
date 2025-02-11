@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import phoneService from "./services/Phoneservice"
+import Notification from './components/Notification'
 
 const App = () => {
 
@@ -10,11 +11,22 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setNewSearchPerson] = useState('')
+  const [errorMessage, setErrorMessage] = useState({data:null,color:'black'})
 
   useEffect(() => {
     phoneService.getPersons()
       .then(persons => {
         setPersons(persons)
+      })
+      .catch(() => {
+        const errorMessageObject = {
+          data: `Unable to get the Phone book List`,
+          color: 'red'
+        }
+        setErrorMessage(errorMessageObject)
+        setTimeout(() => {
+          setErrorMessage({data:null,color:'black'})
+        },5000)
       })
   }, [])
 
@@ -34,6 +46,24 @@ const App = () => {
         setPersons(persons.map(person => searchPerson.id == person.id ? returnedPerson : person ))
         setNewName('')
         setNewNumber('')
+        const errorMessageObject = {
+          data: `${newNameObject.name}'s number is updated in the Phone book List`,
+          color: 'green'
+        }
+        setErrorMessage(errorMessageObject)
+        setTimeout(() => {
+          setErrorMessage({data:null,color:'black'})
+        },5000)
+        })
+        .catch(() => {
+          const errorMessageObject = {
+            data: `Unable to update ${newNameObject.name}'s data`,
+            color: 'red'
+          }
+          setErrorMessage(errorMessageObject)
+          setTimeout(() => {
+            setErrorMessage({data:null,color:'black'})
+          },5000)
         })
       } else {
         setNewName('')
@@ -45,6 +75,24 @@ const App = () => {
         setPersons(persons.concat(person))
         setNewName('')
         setNewNumber('')
+        const errorMessageObject = {
+          data: `${newNameObject.name} is added the Phone book List`,
+          color: 'green'
+        }
+        setErrorMessage(errorMessageObject)
+        setTimeout(() => {
+          setErrorMessage({data:null,color:'black'})
+        },5000)
+      })
+      .catch(() => {
+        const errorMessageObject = {
+          data: `Unable to add ${newNameObject.name} the Phone book List`,
+          color: 'red'
+        }
+        setErrorMessage(errorMessageObject)
+        setTimeout(() => {
+          setErrorMessage({data:null,color:'black'})
+        },5000)
       })
     }
   } 
@@ -64,7 +112,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter searchPerson={searchPerson} setNewSearch={setNewSearch}/>
+      <Notification errorMessage={errorMessage} />
+      <Filter searchPerson={searchPerson}
+              setNewSearch={setNewSearch}
+              />
       <h2>Add a New</h2>
       <PersonForm newName={newName} 
                   newNumber={newNumber}
@@ -73,7 +124,11 @@ const App = () => {
                   addNewPerson={addNewPerson}
                   />
       <h2>Numbers</h2>
-      <Persons persons={persons} searchPerson={searchPerson} setPersons={setPersons}/>
+      <Persons persons={persons}
+               searchPerson={searchPerson} 
+               setPersons={setPersons}
+               setErrorMessage={setErrorMessage}
+               />
     </div>
   )
 }
