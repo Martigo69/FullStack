@@ -11,15 +11,23 @@ const Persons = ({persons, searchPerson, setPersons, setErrorMessage}) => {
             .then(returnedDeletedPerson => {
                 persons = persons.filter(person => person.id !== returnedDeletedPerson.id)
                 setPersons(persons)
-                setErrorMessage(`${name} is deleted from the Phone book List`)
+                const errorMessageObject = {
+                    data: `${name} is deleted from the Phone book List`,
+                    color: 'green'
+                  }
+                setErrorMessage(errorMessageObject)
                 setTimeout(() => {
-                    setErrorMessage(null)
-                  },5000)
+                setErrorMessage({data:null,color:'black'})
+                },5000)
             })
             .catch(() => {
-                setErrorMessage(`Unable to delete ${name} the Phone book List`)
+                const errorMessageObject = {
+                    data: `Unable to delete ${name} the Phone book List`,
+                    color: 'green'
+                  }
+                setErrorMessage(errorMessageObject)
                 setTimeout(() => {
-                  setErrorMessage(null)
+                setErrorMessage({data:null,color:'black'})
                 },5000)
             })       
         } 
