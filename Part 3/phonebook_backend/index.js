@@ -61,7 +61,6 @@ let persons = [
     if (findPerson) {
       persons = persons.filter(note => note.id !== id)
       response.json(findPerson)
-      console.log(response)
     } else {
         return response.status(400).json({ 
             error: 'Person not in the phonebook' 
