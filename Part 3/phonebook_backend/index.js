@@ -1,7 +1,11 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+const cors = require('cors')
+
 app.use(express.json())
-var morgan = require('morgan')
+app.use(express.static('dist'))
+app.use(cors())
 
 morgan.token('body', (req) => JSON.stringify(req.body) || '{}');
 
@@ -34,7 +38,7 @@ let persons = [
     response.json(persons)
   })
 
-  app.get('/info', (request, response) => {
+  app.get('/api/info', (request, response) => {
     const resp = `<p>${new Date().toLocaleString()}</p><br/><p>Phonebook has information for ${persons.length} People</p>`
     response.send(resp)
   })
@@ -53,12 +57,32 @@ let persons = [
 
   app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    const deletePerson = persons.find(note => note.id === id)
-    if (deletePerson) {
-        response.status(204).end()
+    const findPerson = persons.find(note => note.id === id)
+    if (findPerson) {
+      persons = persons.filter(note => note.id !== id)
+      response.json(findPerson)
+      console.log(response)
     } else {
         return response.status(400).json({ 
             error: 'Person not in the phonebook' 
+          })
+    }
+  })
+
+  app.put('/api/persons/:id', (request, response) => {
+    const updatePersonId = request.params.id
+    if (request.body.name && request.body.number) {
+        const updatePerson = { 
+            "id":updatePersonId,
+            "name": request.body.name, 
+            "number": request.body.number
+          }
+        persons = persons.filter(person => updatePersonId !== person.id)
+        persons = persons.concat(updatePerson)
+        response.send(updatePerson)
+    } else {
+        return response.status(400).json({ 
+            error: 'Person details missing' 
           })
     }
   })
@@ -95,7 +119,7 @@ let persons = [
     }
   })
 
-  const PORT = 3001
+  const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
