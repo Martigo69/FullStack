@@ -18,9 +18,9 @@ const App = () => {
       .then(persons => {
         setPersons(persons)
       })
-      .catch(() => {
+      .catch(error => {
         const errorMessageObject: ErrorMessage = {
-          data: `Unable to get the Phone book List`,
+          data: error.response.data.error,
           color: 'red'
         }
         setErrorMessage(errorMessageObject)
@@ -54,9 +54,9 @@ const App = () => {
               setErrorMessage({ data: null, color: 'black' })
             }, 5000)
           })
-          .catch(() => {
+          .catch(error => {
             const errorMessageObject: ErrorMessage = {
-              data: `Unable to update ${newNameObject.name}'s data`,
+              data: error.response.data.error,
               color: 'red'
             }
             setErrorMessage(errorMessageObject)
@@ -83,9 +83,9 @@ const App = () => {
             setErrorMessage({ data: null, color: 'black' })
           }, 5000)
         })
-        .catch(() => {
+        .catch(error => {
           const errorMessageObject: ErrorMessage = {
-            data: `Unable to add ${newNameObject.name} to the Phone book List`,
+            data: error.response.data.error,
             color: 'red'
           }
           setErrorMessage(errorMessageObject)

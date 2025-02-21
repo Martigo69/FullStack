@@ -28,7 +28,7 @@ app.get('/api/info', (request, response) => {
   })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Person.findById(id)
   .then(person => {
@@ -40,7 +40,7 @@ app.get('/api/persons/:id', (request, response) => {
   }).catch(error => { next(error) })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Person.findById(id)
   .then(person => {
@@ -56,7 +56,7 @@ app.delete('/api/persons/:id', (request, response) => {
   }).catch(error => { next(error) })
 })
 
-app.put('/api/persons/:id', (request, response) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const updatePersonId = request.params.id
   if (request.body.name && request.body.number) {
       const updatePerson = { 
@@ -72,10 +72,7 @@ app.put('/api/persons/:id', (request, response) => {
               error: 'Person not in the phonebook' 
             })
           }
-        }).catch(error => {
-          console.log(error)
-          response.status(400).send({ error: 'malformatted id' })
-        })
+        }).catch(error => { next(error) })
   } else {
       return response.status(400).json({ 
           error: 'Person details missing' 
@@ -83,7 +80,7 @@ app.put('/api/persons/:id', (request, response) => {
   }
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const addPerson = request.body
   if (addPerson.name && addPerson.number) {
       const newPerson = new Person({ 
@@ -98,7 +95,7 @@ app.post('/api/persons', (request, response) => {
         } else {
           newPerson.save().then(savedPerson => {
             response.json(savedPerson)
-          })
+          }).catch(error => { next(error) })
         }
       })
   } else {
