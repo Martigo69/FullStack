@@ -29,7 +29,7 @@ const Persons: React.FC<PersonsProps> = ({persons, searchPerson, setPersons, set
             .catch(() => {
                 const errorMessageObject = {
                     data: `Unable to delete ${name} the Phone book List`,
-                    color: 'green'
+                    color: 'red'
                   }
                 setErrorMessage(errorMessageObject)
                 setTimeout(() => {
