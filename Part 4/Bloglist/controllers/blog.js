@@ -1,8 +1,11 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const middleware = require('../utils/middleware')
+
 
 blogRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user', { 'username': 1, 'name': 1 })
     response.json(blogs)
 })
 
@@ -16,20 +19,24 @@ blogRouter.get('/:id', async (request, response) => {
     }
 })
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/',  middleware.userExtractor, async (request, response) => {
     const newBlog = request.body
     if (newBlog.title && newBlog.author && newBlog.url) {
         const newBlogObject = new Blog({
             'title': newBlog.title,
             'author': newBlog.author,
             'url': newBlog.url,
-            'likes': newBlog.likes || 0
+            'likes': newBlog.likes || 0,
+            'user': request.user
         })
         const blog = await Blog.findOne({ 'title': newBlog.title })
+        const user = await User.findById(request.user)
         if (blog) {
             return response.status(400).json({ error: 'Blog already in Bloglist' })
         } else {
             const savedBlog = await newBlogObject.save()
+            user.blogs = user.blogs.concat(savedBlog._id)
+            await user.save()
             return response.status(201).json(savedBlog)
         }
     } else {
@@ -54,12 +61,19 @@ blogRouter.put('/:id', async (request, response) => {
     }
 })
 
-blogRouter.delete('/:id', async (request, response) => {
+blogRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
     const deleteBlogId = request.params.id
     const searchedDeleteBlog = await Blog.findById(deleteBlogId)
+    const user = await User.findById(request.user)
     if (searchedDeleteBlog) {
-        const deletedBlog = await Blog.findByIdAndDelete(deleteBlogId)
-        response.status(204).json(deletedBlog)
+        if (searchedDeleteBlog.user.toString() === request.user.toString()) {
+            const deletedBlog = await Blog.findByIdAndDelete(deleteBlogId)
+            user.blogs = user.blogs.filter(blog => blog !== deletedBlog._id)
+            await user.save()
+            response.status(204).json(deletedBlog)
+        } else {
+            return response.status(401).json({ error: 'Unauthorized to delete the blog' })
+        }
     } else {
         return response.status(400).json({ error: 'Blog not in database' })
     }

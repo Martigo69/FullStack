@@ -12,6 +12,15 @@ const totalLikes = (blogs) => {
     return blogs.reduce(cal, 0)
 }
 
+const favoriteBlog = (blogs) => {
+    if (_.size(blogs) === 0) {
+        return null
+    } else {
+        const orderBlogs = _.orderBy(blogs, ['likes'], ['desc'])
+        return { author: orderBlogs[0].author,  title: orderBlogs[0].title, likes: orderBlogs[0].likes }
+    }
+}
+
 const mostBlogs = (blogs) => {
     const authorCounts = _.countBy(blogs, 'author')
 
@@ -41,5 +50,6 @@ module.exports = {
     dummy,
     totalLikes,
     mostBlogs,
-    mostLikes
+    mostLikes,
+    favoriteBlog
 }
