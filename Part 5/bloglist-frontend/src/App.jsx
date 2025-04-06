@@ -52,10 +52,7 @@ const App = () => {
           padding: '10px',
           marginBottom: '10px'
         }}>
-          <span>{blog.title}</span>
-          <Togglable buttonOpenLabel="View" buttonCloseLabel="Hide" ref={blogViewRef}>
-            <Blog blog={blog} blogs={blogs} setBlogs={setBlogs} setErrorMessage={setErrorMessage} blogViewRef={blogViewRef} />
-          </Togglable>
+          <Blog blog={blog} blogs={blogs} setBlogs={setBlogs} setErrorMessage={setErrorMessage} blogViewRef={blogViewRef} />
         </div>
       ))}
     </div> }
