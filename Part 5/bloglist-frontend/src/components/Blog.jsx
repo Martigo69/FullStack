@@ -21,18 +21,27 @@ const Blog = ({ blog, blogs, setBlogs, setErrorMessage, blogViewRef, updateBlogM
   const handleDelete = async (id) => {
       const confirmDelete = window.confirm('Are you sure you want to delete this blog?')
     if (!confirmDelete) return
-      const response = await blogService.deleteBlog(id)
-      let deletedBlog = blogs.filter(blog => blog.id === id)
-      setBlogs(blogs.filter(blog => blog.id !== id))
-      const errorMsg = [`Blog Deleted ${deletedBlog[0].title}`, 'Yellow']
+    try{
+        const response = await blogService.deleteBlog(id)
+        console.log(response)
+        let deletedBlog = blogs.filter(blog => blog.id === id)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        const errorMsg = [`Blog Deleted ${deletedBlog[0].title}`, 'Yellow']
+        setErrorMessage(errorMsg)
+        setTimeout(() => {
+          setErrorMessage([])
+        }, 5000)
+    } catch(error) {
+      const status = error.response.status
+      const message = error.response.data.error
+      const errorMsg = [`Error deleting blog: ${message} (Status: ${status})`, 'Red']
       setErrorMessage(errorMsg)
-      setTimeout(() => {
-        setErrorMessage([])
-      }, 5000)
+      setTimeout(() => setErrorMessage([]), 5000)
     }
+  }
 
   return (
-    <div>
+    <div className="blog" data-testid={blog.title}>
       <div className='title'>Title: {blog.title}</div>
       <div className='author'>Author: {blog.author}</div>
       <Togglable buttonOpenLabel="View" buttonCloseLabel="Hide" ref={blogViewRef}>

@@ -46,13 +46,13 @@ const AddBlog = ({blogs, setBlogs, setErrorMessage, blogFormRef, mockCreateBlog}
         <form className='addblog' onSubmit={handleAddNewBlog}>
             <h2>Create New Blog</h2>
             <div>
-            Title: <input type="text" className='title' value={title} onChange={handleTitleChange}/>
+            Title: <input data-testid='inputtitle' type="text" className='title' value={title} onChange={handleTitleChange}/>
             </div>
             <div>
-            Author: <input type="text" className='author' value={author} onChange={handleAuthorChange}/>
+            Author: <input data-testid='inputauthor' type="text" className='author' value={author} onChange={handleAuthorChange}/>
             </div>
             <div>
-            Url: <input type="text" className='url' value={url} onChange={handleUrlChange}/>
+            Url: <input data-testid='inputurl' type="text" className='url' value={url} onChange={handleUrlChange}/>
             </div>
             <div>
             <button className='submitbutton' type="submit">Create</button>
