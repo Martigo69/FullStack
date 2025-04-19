@@ -2,7 +2,6 @@ const testingRouter = require('express').Router()
 const Blog = require('../models/blog')
 
 testingRouter.get('/reset', async (request, response) => {
-    console.log('safsd')
     await Blog.deleteMany({})
 
     await Blog.insertMany([

@@ -1,7 +1,7 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 
-const Login = ({ username, password, setUsername, setPassword, setUser, setErrorMessage }) => {
+const Login = ({ username, password, setUsername, setPassword, setUser, setErrorMessage, blogs, setBlogs }) => {
 
     const handleLogin = async (event) => {
         event.preventDefault()
@@ -13,6 +13,9 @@ const Login = ({ username, password, setUsername, setPassword, setUser, setError
                 'loggedBlogappUser', JSON.stringify(user)
             ) 
             blogService.setToken(user.token)
+            blogService.getAll().then(blogs =>
+              setBlogs( [...blogs].sort((a, b) => b.likes - a.likes) )
+            )
             setUser(user)
             setUsername('')
             setPassword('')

@@ -29,6 +29,7 @@ const AddBlog = ({blogs, setBlogs, setErrorMessage, blogFormRef, mockCreateBlog}
         if (mockCreateBlog) {
             await mockCreateBlog(newBlog)
         } else {
+            console.log(newBlog)
             const response = await blogService.createBlog(newBlog)
             setBlogs(blogs.concat(response))
             setTitle('')

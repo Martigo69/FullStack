@@ -16,18 +16,18 @@ const App = () => {
   const blogViewRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( [...blogs].sort((a, b) => b.likes - a.likes) )
-    )  
-  }, [])
-
-  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
     }
+  }, [])
+
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs( [...blogs].sort((a, b) => b.likes - a.likes) )
+    )  
   }, [])
 
   const handleLogout = () => {
@@ -39,7 +39,7 @@ const App = () => {
     <div>
       { errorMessage.length !== 0 && <Notification errorMessage = {errorMessage} />}
       { user === null ? 
-      <Login username={username} password={password} setUsername={setUsername} setPassword={setPassword} setUser={setUser} setErrorMessage={setErrorMessage}/> : 
+      <Login username={username} password={password} setUsername={setUsername} setPassword={setPassword} setUser={setUser} setErrorMessage={setErrorMessage} blogs={blogs} setBlogs={setBlogs}/> : 
       <div>
       <Togglable buttonOpenLabel="New Blog" buttonCloseLabel="Cancel" ref={blogFormRef}>
         <AddBlog blogs={blogs} setBlogs={setBlogs} setErrorMessage={setErrorMessage} blogFormRef={blogFormRef}/>

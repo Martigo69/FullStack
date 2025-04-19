@@ -112,34 +112,4 @@ describe('Blog app', () => {
       await expect(blog).not.toBeVisible();
     })
   })
-
-  describe('When logged in as another user', () => {
-    beforeEach(async ({ page,request }) => {
-      await request.get('/api/testing/reset')
-      await page.goto('/')
-      await page.getByTestId('username').fill('home')
-      await page.getByTestId('password').fill('home')
-      await page.getByRole('button', { name: 'login' }).click()
-    })
-  
-    test('a new blog is not shown', async ({ page }) => {
-      const blog = page.getByTestId('React');
-      await blog.getByRole('button', { name: 'view' }).click();
-
-      page.once('dialog', async dialog => {
-        expect(dialog.message()).toContain('Are you sure you want to delete this blog?');
-        await dialog.accept();
-      });
-
-      await Promise.all([
-        page.waitForResponse(response =>
-          response.url().includes('/api/blogs/') &&
-          response.request().method() === 'DELETE' &&
-          response.status() === 401
-        ),
-        blog.getByRole('button', { name: 'Delete' }).click()
-    ]);
-      await expect(blog).toBeVisible();
-    })
-  })
 })
