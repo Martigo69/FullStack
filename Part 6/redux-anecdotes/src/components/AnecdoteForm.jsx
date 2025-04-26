@@ -1,5 +1,6 @@
 import { createAnecdote } from '../reducers/anecdoteReducer'
 import { useDispatch } from 'react-redux'
+import { notifyAnecdote } from '../reducers/notificationReducer'
 
 const AnecdoteForm = () => {
 
@@ -7,8 +8,15 @@ const AnecdoteForm = () => {
 
     const create = (event) => {
         event.preventDefault()
-        dispatch(createAnecdote(event.target.newanecdote.value))
-        event.target.newanecdote.value=''
+        const content = event.target.newanecdote.value
+        event.target.newanecdote.value = ''
+    
+        dispatch(createAnecdote(content))
+        dispatch(notifyAnecdote(`${content} has been created`))
+    
+        setTimeout(() => {
+          dispatch(notifyAnecdote(''))
+        }, 5000)
       }
 
     return (
